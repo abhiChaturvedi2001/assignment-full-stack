@@ -1,0 +1,19 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id        Int       @id @default(autoincrement())
+  name      String
+  course    String[]
+  cohort    String
+  status    Boolean   @default(true)
+  lastLogin DateTime? // Allows null for last login
+  date      DateTime  @default(now())
+}
