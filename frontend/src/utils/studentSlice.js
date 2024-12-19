@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { act } from 'react';
 
 const studentSlice = createSlice({
     name: "students",
     initialState: {
-        students: []
+        students: [],
     },
     reducers: {
         getStudentsData: (state, action) => {
@@ -16,10 +17,16 @@ const studentSlice = createSlice({
         },
         addMoreData: (state, action) => {
             state.students = [...state.students, action.payload]
-        }
+        },
+        updateStudentData(state, action) {
+            const updatedStudent = action.payload;
+            state.students = state.students.map((student) =>
+                student.id === updatedStudent.id ? updatedStudent : student
+            );
+        },
     }
 });
 
-export const { getStudentsData, deleteStudentsData, addMoreData } = studentSlice.actions
+export const { getStudentsData, deleteStudentsData, addMoreData, updateStudentData } = studentSlice.actions
 
 export default studentSlice.reducer

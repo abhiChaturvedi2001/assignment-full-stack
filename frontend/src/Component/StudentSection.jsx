@@ -1,6 +1,5 @@
 import React from "react";
 import StudentList from "./StudentList";
-import Modal from "./Modal";
 
 const StudentSection = () => {
   return (
@@ -25,7 +24,6 @@ const StudentSection = () => {
         </div>
         <StudentList />
       </div>
-      <Modal />
     </>
   );
 };

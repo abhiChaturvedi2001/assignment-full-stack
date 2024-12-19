@@ -1,17 +1,28 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import React, { useState } from "react";
-import { addMoreData } from "../utils/studentSlice";
+import { addMoreData, updateStudentData } from "../utils/studentSlice";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { apiBaseUrl } from "../utils/constant";
 
-const Modal = () => {
+const Modal = ({ selectedStudent, setSelectedStudent }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     cohort: "",
     course: [],
   });
+
+  useEffect(() => {
+    if (selectedStudent) {
+      // Populate the form when in update mode
+      setFormData({
+        name: selectedStudent[0].name || "",
+        cohort: selectedStudent[0].cohort || "",
+        course: selectedStudent[0].course || [],
+      });
+    }
+  }, [selectedStudent]);
 
   const courseList = [
     "Mathematics",
@@ -42,17 +53,31 @@ const Modal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiBaseUrl}/students`, formData, {
-        withCredentials: true,
-      });
-      if (response?.status == 201) {
-        dispatch(addMoreData(response?.data));
-        document.getElementById("my_modal_5").close();
-        toast.success("student Created Succesfully");
+      if (selectedStudent) {
+        const response = await axios.put(
+          `${apiBaseUrl}/students/${selectedStudent[0].id}`,
+          formData,
+          { withCredentials: true }
+        );
+        if (response?.status === 200) {
+          dispatch(updateStudentData(response?.data));
+          document.getElementById("my_modal_5").close();
+          toast.success("Student updated successfully");
+          setSelectedStudent(null);
+        }
+      } else {
+        const response = await axios.post(`${apiBaseUrl}/students`, formData, {
+          withCredentials: true,
+        });
+        if (response?.status === 201) {
+          dispatch(addMoreData(response?.data));
+          document.getElementById("my_modal_5").close();
+          toast.success("Student created successfully");
+        }
       }
+      setFormData({ name: "", cohort: "", course: [] });
     } catch (error) {
-      toast.error(error);
-      throw new Error(error);
+      toast.error(error?.message || "Something went wrong");
     }
   };
 
@@ -60,9 +85,14 @@ const Modal = () => {
     <>
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Create Student!</h3>
+          <h3 className="font-bold text-lg">
+            {selectedStudent ? "Update Student" : "Create Student"}
+          </h3>
           <p className="py-4">
-            Please fill out the form below with your details:
+            Note: press ESC to close the form if you want to close
+            {selectedStudent
+              ? "Update the form below with your details: "
+              : "Please fill out the form below with your details:"}
           </p>
           <form onSubmit={handleSubmit}>
             <div className="form-control mb-4">
@@ -107,7 +137,7 @@ const Modal = () => {
 
             <div className="form-control mb-4">
               <label className="label">
-                <span className="label-text">course</span>
+                <span className="label-text">Course</span>
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {courseList.map((subject) => (
@@ -129,7 +159,7 @@ const Modal = () => {
             </div>
             <div className="modal-action">
               <button type="submit" className="btn">
-                Submit
+                {selectedStudent ? "Update" : "Submit"}
               </button>
             </div>
           </form>

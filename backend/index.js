@@ -9,6 +9,7 @@ const options = {
     origin: "https://assignment-full-stack-zeta.vercel.app",
     credentials: true
 }
+
 app.use(express.json());
 app.use(cors(options));
 app.use("/api/users", userRoutes)
