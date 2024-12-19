@@ -39,4 +39,4 @@ export const sidebarData = [
 ]
 
 // export const apiBaseUrl = `http://localhost:4040/api/users`
-export const apiBaseUrl = `https://fullstack-backend-phi.vercel.app/api/users/`
+export const apiBaseUrl = `https://fullstack-backend-phi.vercel.app/api/users`
