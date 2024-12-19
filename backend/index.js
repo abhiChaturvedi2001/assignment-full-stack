@@ -6,7 +6,7 @@ dotenv.config();
 
 const app = express();
 const options = {
-    origin: process.env.BASE_URL,
+    origin: "https://assignment-full-stack-zeta.vercel.app",
     credentials: true
 }
 app.use(express.json());
